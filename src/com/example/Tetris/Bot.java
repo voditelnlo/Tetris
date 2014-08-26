@@ -23,12 +23,16 @@ public class Bot
     {
         BotChoice botChoices[] = new BotChoice[4*game.getMatrixWidth()];
 
-        for (int botChoiceCount = 0; botChoiceCount < 4*game.getMatrixWidth(); botChoiceCount++)
-        {
-            for (int rotate = 0; rotate < 3; rotate++)
+        //for (int botChoiceCount = 0; botChoiceCount < 4*game.getMatrixWidth(); botChoiceCount++)
+        //{
+            for (int rotate = 0; rotate < 4; rotate++)
             {
                 for (int moveX = 0; moveX < game.getMatrixWidth(); moveX++)
                 {
+                    int botChoiceCount = rotate + 4*moveX;
+
+                    botChoices[botChoiceCount] = new BotChoice();
+
                     botChoices[botChoiceCount].setX(moveX);
                     botChoices[botChoiceCount].setRotateCount(rotate);
 
@@ -51,7 +55,7 @@ public class Bot
                     if (Validate(tmpFigure))
                     {
                         botChoices[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
-
+/*
                         GameState tmpGame = new GameState(game);
 
                         tmpGame.getFigure().Move(tmpFigure.getX(), tmpFigure.getY());
@@ -90,7 +94,7 @@ public class Bot
                                     botChoices[botChoiceCount].addWeight(minWeight);
                                 }
                             }
-                        }
+                        }*/
                     }
                     else
                     {
@@ -98,7 +102,7 @@ public class Bot
                     }
                 }
             }
-        }
+        //}
 
         int maxWeight = minWeight;
         int numberMaxWeight = 0;
