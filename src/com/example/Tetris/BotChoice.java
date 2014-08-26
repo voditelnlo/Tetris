@@ -12,7 +12,18 @@ public class BotChoice
     {
         x = 0;
         rotateCount = 0;
+        nextFigureX = 0;
+        nextFigureRotateCount = 0;
         weight = 0;
+    }
+
+    public BotChoice(BotChoice botChoice)
+    {
+        this.x = botChoice.getX();
+        this.rotateCount = botChoice.getRotateCount();
+        this.nextFigureX = botChoice.getNextFigureX();
+        this.nextFigureRotateCount = botChoice.getNextFigureRotateCount();
+        this.weight = botChoice.getWeight();
     }
 
     public int getWeight() {

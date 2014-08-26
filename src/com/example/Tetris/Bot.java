@@ -4,119 +4,115 @@ public class Bot
 {
     private GameState game;
 
-    public void Bot(GameState game)
+    private int weightTouch = 0;
+    private int weightVoid = 0;
+    private int minWeight = 0;
+
+    BotChoice botChoice = new BotChoice();
+
+    public Bot(GameState game)
     {
+        this.weightTouch = 2;
+        this.weightVoid = -3;
+        this.minWeight = -100;
         this.game = new GameState(game);
+        this.botChoice =  new BotChoice(Selection());
     }
 
-    private BotChoice Selection()
+    public BotChoice Selection()
     {
         BotChoice botChoice[] = new BotChoice[4*game.getMatrixWidth()];
 
-        for (int i = 0; i < 3; i++)
+        for (int botChoiceCount = 0; botChoiceCount < 4*game.getMatrixWidth(); botChoiceCount++)
         {
-            for (int j = 0; j < game.getMatrixWidth() - 1; j++)
+            for (int rotate = 0; rotate < 3; rotate++)
             {
-                botChoice[i*4+j].setX(j);
-                botChoice[i*4+j].setRotateCount(i);
+                for (int moveX = 0; moveX < game.getMatrixWidth(); moveX++)
+                {
+                    botChoice[botChoiceCount].setX(moveX);
+                    botChoice[botChoiceCount].setRotateCount(rotate);
 
-                botChoice[i*4+j].addWeight(-100);
+                    Figure tmpFigure = new Figure(game.getFigure());
+
+                    for (int rotateCount = 0; rotateCount < rotate; rotateCount++)
+                    {
+                        tmpFigure.Rotate();
+                    }
+
+                    tmpFigure.Move(moveX, tmpFigure.getY());
+
+                    while (Validate(tmpFigure))
+                    {
+                        tmpFigure.Move(tmpFigure.getX(), tmpFigure.getY() + 1);
+                    }
+
+                    tmpFigure.Move(tmpFigure.getX(), tmpFigure.getY() - 1);
+
+                    if (Validate(tmpFigure))
+                    {
+                        botChoice[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
+
+                        GameState tmpGame = new GameState(game);
+
+                        tmpGame.getFigure().Move(tmpFigure.getX(), tmpFigure.getY());
+
+                        tmpGame.GameTick();
+
+                        for (int NextFigureRotate = 0; NextFigureRotate < 3; NextFigureRotate++)
+                        {
+                            for (int NextFigureMoveX = 0; NextFigureMoveX < tmpGame.getMatrixWidth(); NextFigureMoveX++)
+                            {
+                                botChoice[botChoiceCount].setNextFigureX(NextFigureMoveX);
+                                botChoice[botChoiceCount].setNextFigureRotateCount(NextFigureRotate);
+
+                                tmpFigure = new Figure(tmpGame.getFigure());//Figure tmpNextFigure = new Figure(tmpGame.getFigure());
+
+                                for (int rotateCount = 0; rotateCount < rotate; rotateCount++)
+                                {
+                                    tmpFigure.Rotate();
+                                }
+
+                                tmpFigure.Move(NextFigureMoveX, tmpFigure.getY());
+
+                                while (Validate(tmpFigure))
+                                {
+                                    tmpFigure.Move(tmpFigure.getX(), tmpFigure.getY() + 1);
+                                }
+
+                                tmpFigure.Move(tmpFigure.getX(), tmpFigure.getY() - 1);
+
+                                if (Validate(tmpFigure))
+                                {
+                                    botChoice[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
+                                }
+                                else
+                                {
+                                    botChoice[botChoiceCount].addWeight(minWeight);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        botChoice[botChoiceCount].addWeight(minWeight);
+                    }
+                }
             }
         }
-// смена фигуры
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < game.getMatrixWidth() - 1; j++)
-            {
-                botChoice[i*4+j].setNextFigureX(j);
-                botChoice[i*4+j].setNextFigureRotateCount(i);
 
-                botChoice[i*4+j].addWeight(-100);
-            }
-        }
-
-        int maxWeight = -100;
+        int maxWeight = minWeight;
         int numberMaxWeight = 0;
 
-        for (int i = 0; i < 4*game.getMatrixWidth() - 1; i++)
+        for (int i = 0; i < 4*game.getMatrixWidth(); i++)
         {
                 if (botChoice[i].getWeight() > maxWeight)
                 {
+                    maxWeight = botChoice[i].getWeight();
                     numberMaxWeight = i;
                 }
         }
 
         return botChoice[numberMaxWeight];
-    }
-
-    private int Step()
-    {
-        Figure tmpFigure = new Figure(game.getFigure());
-
-        tmpFigure.Move(tmpFigure.getX(), tmpFigure.getY() + 1);
-
-        if (StepValidate(tmpFigure))
-        {
-            game.getFigure().Move(game.getFigure().getX(), game.getFigure().getY() + 1);
-            return -1;
-        }
-        else
-        {
-            int retJoin = Join(game.getFigure());
-
-            if (retJoin < 0)
-            {
-                //game Over
-            }
-
-            return 0;
-        }
-    }
-
-    public void Fall()
-    {
-        int score = 0;
-        int retStep = 0;
-
-        do {
-            retStep = Step();
-
-            if (retStep == -1)
-            {
-                score++;
-            }
-            else
-            {
-                score += retStep;
-            }
-
-        }while(retStep == -1);
-
-        AddScore(score);
-    }
-
-    public void MoveRight()
-    {
-        Figure tmpFigure = new Figure(figure);
-
-        tmpFigure.Move(figure.getX() + 1, figure.getY());
-
-        if (Validate(tmpFigure))
-        {
-            figure.Move(figure.getX() + 1, figure.getY());
-        }
-    }
-
-    public void MoveLeft()
-    {
-        Figure tmpFigure = new Figure(figure);
-
-        tmpFigure.Move(figure.getX() - 1, figure.getY());
-
-        if (Validate(tmpFigure))
-        {
-            figure.Move(figure.getX() - 1, figure.getY());
-        }
     }
 
     private boolean Validate(Figure figure)
@@ -146,38 +142,9 @@ public class Bot
         return true;
     }
 
-    private boolean StepValidate(Figure figure)
-    {
-        for (int i = 0; i < figure.getWidth(); i++)
-        {
-            for (int j = 0; j < figure.getHeight(); j++)
-            {
-                if (figure.getElements()[i][j] != 0)
-                {
-                    if (figure.getY() + j >= game.getMatrixHeight())
-                    {
-                        return false;
-                    }
-                    else if(figure.getY() + j >= 0)
-                    {
-                        if (game.getMatrix()[figure.getX() + i][figure.getY() + j] != 0)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
     private int PaymentTouches(Figure figure)
     {
         int returnWeight = 0;
-
-        int weightTouch = 2;
-        int weightVoid = -3;
 
         for (int i = 0; i < figure.getWidth(); i++)
         {
@@ -211,10 +178,6 @@ public class Bot
                                 returnWeight += weightTouch;
                             }
                         }
-                    }
-                    else
-                    {
-                        return -1;//исправить с прицелом на расчет касаний
                     }
                 }
             }
@@ -253,29 +216,4 @@ public class Bot
 
         return returnWeight;
     }
-
-    private int AssessmentOfFigures()
-    {
-
-
-        return 0;
-    }
-
-    public void GameTick()
-    {
-        delayCounter++;
-
-        if (delayCounter >= delay)
-        {
-            delayCounter = 0;
-            Step();
-        }
-    }
-
-    private void AddScore(int score)
-    {
-        this.score += score;
-        delay = (int)Math.pow(10, 35380.0 / (this.score + 17290) + 0.025);
-    }
-
 }

@@ -7,10 +7,6 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * Created by nnn on 20.08.2014.
- */
-
 public class Tetris extends View
 {
     public Tetris(Context context)
@@ -152,6 +148,23 @@ public class Tetris extends View
         }
     }
 
+    private void BotStep()
+    {
+        Bot botGame = new Bot(bot);
+
+        BotChoice botChoice = new BotChoice(botGame.Selection());
+
+        bot.getFigure().Move(botChoice.getX(), bot.getFigure().getY());
+
+        for (int i = 0; i < botChoice.getRotateCount(); i++)
+        {
+            bot.Rotate();
+        }
+
+        bot.Fall();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         if(event.getAction() == MotionEvent.ACTION_DOWN)
@@ -167,6 +180,8 @@ public class Tetris extends View
             {
                 touchX = event.getX();
                 touchY = event.getY();
+
+                BotStep();
 
                 if (touchY > this.getHeight() / 2)
                 {
