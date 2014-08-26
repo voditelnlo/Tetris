@@ -1,50 +1,13 @@
 package com.example.Tetris;
 
-/**
- * Created by nnn on 22.08.2014.
-
 public class Bot
 {
-    private int matrixWidth = 0;
-    private int matrixHeight = 0;
-
-    private int figureWidth = 0;
-    private int figureHeight = 0;
-
-    private int delayCounter = 0;
-    private int delay = 0;
-
-    private int score = 0;
-
-    private int matrix[][];
-
-    private boolean gameOver = true;
-
-    private Figure figure = new Figure();
+    private GameState game;
 
     public void Bot(GameState game)
     {
-        matrixWidth = game.getMatrixWidth();
-        matrixHeight = game.getMatrixHeight();
-        matrix = new int[matrixWidth][matrixHeight];
-
-        figureWidth = game.getFigureWidth();
-        figureHeight = game.getFigureHeight();
-        game.get
-        for(int i = 0; i < figureWidth - 1; i++)
-        {
-            for (int j = 0; j < figureHeight - 1; j++)
-            {
-                figure.
-                        ga
-            }
-        }
-
-
+        this.game = new GameState(game);
     }
-
-
-
 
         private void fsdfdf(GameState game)
         {
@@ -206,4 +169,3 @@ public class Bot
         }
     }
 }
- */
