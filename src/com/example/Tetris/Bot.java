@@ -9,9 +9,44 @@ public class Bot
         this.game = new GameState(game);
     }
 
-    private void AssessmentOfOptions()
+    private BotChoice Selection()
     {
+        BotChoice botChoice[] = new BotChoice[4*game.getMatrixWidth()];
 
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < game.getMatrixWidth() - 1; j++)
+            {
+                botChoice[i*4+j].setX(j);
+                botChoice[i*4+j].setRotateCount(i);
+
+                botChoice[i*4+j].addWeight(-100);
+            }
+        }
+// смена фигуры
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < game.getMatrixWidth() - 1; j++)
+            {
+                botChoice[i*4+j].setNextFigureX(j);
+                botChoice[i*4+j].setNextFigureRotateCount(i);
+
+                botChoice[i*4+j].addWeight(-100);
+            }
+        }
+
+        int maxWeight = -100;
+        int numberMaxWeight = 0;
+
+        for (int i = 0; i < 4*game.getMatrixWidth() - 1; i++)
+        {
+                if (botChoice[i].getWeight() > maxWeight)
+                {
+                    numberMaxWeight = i;
+                }
+        }
+
+        return botChoice[numberMaxWeight];
     }
 
     private int Step()
@@ -137,9 +172,12 @@ public class Bot
         return true;
     }
 
-    private int Join(Figure figure)
+    private int PaymentTouches(Figure figure)
     {
-        int lineDown = 0;
+        int returnWeight = 0;
+
+        int weightTouch = 2;
+        int weightVoid = -3;
 
         for (int i = 0; i < figure.getWidth(); i++)
         {
@@ -149,58 +187,71 @@ public class Bot
                 {
                     if (figure.getY() >= 0)
                     {
-                        //game.getMatrix()[figure.getX() + i][figure.getY() + j] = figure.getElements()[i][j];
+                        if (figure.getElements()[i][j] > 0)
+                        {
+                            //есть ли клетка или граница внизу
+                            if (game.getMatrix()[figure.getX() + i][figure.getY() + j + 1] > 0 || figure.getY() + j + 1 == game.getMatrixHeight())
+                            {
+                                returnWeight += weightTouch;
+                            }
+                            else
+                            {
+                                returnWeight += weightVoid;
+                            }
 
-                        //расчет касаний и закинуть фигуру на это место для расчета следующей
+                            //есть ли клетка или граница справа
+                            if (game.getMatrix()[figure.getX() + i + 1][figure.getY() + j] > 0 || figure.getX() + i + 1 == game.getMatrixWidth())
+                            {
+                                returnWeight += weightTouch;
+                            }
+
+                            //есть ли клетка или граница слева
+                            if (game.getMatrix()[figure.getX() + i - 1][figure.getY() + j + 1] > 0 || figure.getX() + j - 1 == 0)
+                            {
+                                returnWeight += weightTouch;
+                            }
+                        }
                     }
                     else
                     {
-                        return -1;
+                        return -1;//исправить с прицелом на расчет касаний
                     }
                 }
             }
         }
 
-        //получить очки
-/*
-        for (int i = matrixHeight - 1; i >= 0; i--)
+        // вклад высоты над дном стакана верхней точки фигуры
+        for (int i = 0; i < figure.getWidth(); i++)
         {
-            int count = 0;
-
-            for (int j = 0; j < matrixWidth; j++)
+            for (int j = 0; j < figure.getHeight(); j++)
             {
-                if (matrix[j][i] != 0)
+                if (figure.getElements()[i][j] > 0)
                 {
-                    count++;
+                    returnWeight += game.getMatrixHeight() - figure.getY();
+
+                    i = figure.getWidth();
+                    j = figure.getHeight();
                 }
             }
-
-            if (count == matrixWidth)
-            {
-                lineDown++;
-
-                for (int ii = matrixHeight - 1; ii > 0; ii--)
-                {
-                    for (int jj = 0; jj < matrixWidth; jj++)
-                    {
-                        if (i >= ii)
-                        {
-                            matrix[jj][ii] = matrix[jj][ii-1];
-                        }
-                        else
-                        {
-                            jj = matrixWidth;
-                        }
-                    }
-                }
-
-                i++;
-            }
-
         }
-    */
+        // вклад высоты над дном стакана нижней точки фигуры
 
-        return 100*lineDown;
+        for (int i = 0; i < figure.getWidth(); i++)
+        {
+            for (int j = figure.getHeight() - 1; j >= 0; j--)
+            {
+                if (figure.getElements()[i][j] > 0)
+                {
+                    returnWeight += game.getMatrixHeight() - figure.getY();
+
+                    i = figure.getWidth();
+                    j = -1;
+                }
+
+            }
+        }
+
+        return returnWeight;
     }
 
     private int AssessmentOfFigures()
@@ -227,169 +278,4 @@ public class Bot
         delay = (int)Math.pow(10, 35380.0 / (this.score + 17290) + 0.025);
     }
 
-
-    private void qwe()
-    {
-
-
-
-        int SH_ST = game.getMatrixWidth();
-        int SH_FG = game.getFigure().getWidth();
-
-        int VS_ST = game.getMatrixHeight();
-
-        int shmass = SH_ST + SH_FG;
-
-        int[][] priyatnost = new int[4][shmass];
-
-        int[][]st = game.getMatrix().clone();
-
-        game.get
-
-        Figure fg = ;
-
-        int prKas = 2;
-        int prLin = 5;
-        int prMin = -100;
-        int prPus = -3;
-
-        int niz = 0;
-
-        for (int i = 0; i < SH_ST; i++) {
-            for (int j = 0; j < VS_ST; j++) {
-                if (st[i][j]!=0)
-                {
-                    if (niz < j) niz = j;
-
-                    j = VS_ST;
-                }
-                else
-                {
-                    if (j == VS_ST - 1) {
-                        niz = j;
-                        i = SH_ST;
-                    }
-                }
-            }
-        }
-
-        for (int n = 0; n < 4; n++) {
-            for (int m = 0; m < shmass; m++) {
-                game.
-                        game.getFigureX() = m - SH_FG;
-                fg.polozhenie.Y = fgr.polozhenie.Y;
-
-                if (Stolknovenie(fg, st, new Point(0, 0)) == 0) {
-                    while (Stolknovenie(fg, st, new Point(0, 1)) != 2) {
-                        fg.polozhenie.Y++;
-                    }
-
-                    int verh = 0;
-
-                    for (int i = 0; i < SH_FG; i++) {
-                        for (int j = 0; j < VS_FG; j++) {
-                            if (fg.figura[i,j]!=0)
-                            {
-                                if (verh > j) verh = j;
-                                j = VS_FG;
-                            }
-
-                        }
-                    }
-
-                    priyatnost[n, m]+=(fg.polozhenie.Y - niz);
-
-                    for (int y = 0; y < SH_FG; y++) {
-                        for (int x = 0; x < VS_FG; x++) {
-                            if (fg.figura[x,y]!=0)
-                            {
-                                int polX = fg.polozhenie.X + x;
-                                int polY = fg.polozhenie.Y + y;
-
-                                if (polY == VS_ST - 1) {
-                                    priyatnost[n, m]+=prKas;
-                                } else {
-                                    if (st[polX,polY + 1]!=0)
-                                    {
-                                        priyatnost[n, m]+=prKas;//касание клетки ниже
-                                    }
-                                    else
-                                    {
-                                        if (y < VS_FG - 1) if (fg.figura[x,y + 1]==0)priyatnost[n, m]+=
-                                        prPus;//внизу пусто
-                                    }
-                                }
-
-                                if (polX == 0) {
-                                    priyatnost[n, m]+=prKas;
-                                } else {
-                                    if (st[polX - 1,polY]!=0)priyatnost[n, m]+=prKas;
-                                }
-
-                                if (polX == SH_ST - 1) {
-                                    priyatnost[n, m]+=prKas;
-                                } else {
-                                    if (st[polX + 1,polY]!=0)priyatnost[n, m]+=prKas;
-                                }
-
-                                int tmp = 0;
-
-                                for (int i = 0; i < SH_ST; i++) {
-                                    if (st[i,polY]!=0)
-                                    {
-                                        tmp++;
-                                    }
-                                    else
-                                    {
-                                        if (i >= fg.polozhenie.X && i < fg.polozhenie.X + SH_FG) {
-                                            if (fg.figura[i - fg.polozhenie.X,polY - fg.polozhenie.Y]!=0)
-                                            {
-                                                tmp++;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (tmp == SH_ST) priyatnost[n, m]+=prLin;
-                            }
-                        }
-                    }
-                } else {
-                    priyatnost[n, m]=prMin;
-                }
-            }
-
-            fg = PovorotFigury(fg);
-
-            fg.polozhenie.Y = fgr.polozhenie.Y;
-        }
-
-        fg = fgr;
-
-        int max = priyatnost[0, 0];
-        int povorot = 0;
-
-        for (int n = 0; n < 4; n++) {
-            for (int m = 0; m < shmass; m++) {
-                if (priyatnost[n,m]>max)
-                {
-                    max = priyatnost[n, m];
-
-                    fg.polozhenie.X = m - SH_FG;
-                    povorot = n;
-                }
-            }
-        }
-
-        for (int i = 0; i < povorot; i++) {
-            fg = PovorotFigury(fg);
-        }
-
-        while (Stolknovenie(fg, st, new Point(0, 1)) != 2) {
-            fg.polozhenie.Y++;
-        }
-
-        return fg;
-    }
-    }
 }
