@@ -21,7 +21,7 @@ public class Bot
 
     public BotChoice Selection()
     {
-        BotChoice botChoice[] = new BotChoice[4*game.getMatrixWidth()];
+        BotChoice botChoices[] = new BotChoice[4*game.getMatrixWidth()];
 
         for (int botChoiceCount = 0; botChoiceCount < 4*game.getMatrixWidth(); botChoiceCount++)
         {
@@ -29,8 +29,8 @@ public class Bot
             {
                 for (int moveX = 0; moveX < game.getMatrixWidth(); moveX++)
                 {
-                    botChoice[botChoiceCount].setX(moveX);
-                    botChoice[botChoiceCount].setRotateCount(rotate);
+                    botChoices[botChoiceCount].setX(moveX);
+                    botChoices[botChoiceCount].setRotateCount(rotate);
 
                     Figure tmpFigure = new Figure(game.getFigure());
 
@@ -50,7 +50,7 @@ public class Bot
 
                     if (Validate(tmpFigure))
                     {
-                        botChoice[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
+                        botChoices[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
 
                         GameState tmpGame = new GameState(game);
 
@@ -62,8 +62,8 @@ public class Bot
                         {
                             for (int NextFigureMoveX = 0; NextFigureMoveX < tmpGame.getMatrixWidth(); NextFigureMoveX++)
                             {
-                                botChoice[botChoiceCount].setNextFigureX(NextFigureMoveX);
-                                botChoice[botChoiceCount].setNextFigureRotateCount(NextFigureRotate);
+                                botChoices[botChoiceCount].setNextFigureX(NextFigureMoveX);
+                                botChoices[botChoiceCount].setNextFigureRotateCount(NextFigureRotate);
 
                                 tmpFigure = new Figure(tmpGame.getFigure());//Figure tmpNextFigure = new Figure(tmpGame.getFigure());
 
@@ -83,18 +83,18 @@ public class Bot
 
                                 if (Validate(tmpFigure))
                                 {
-                                    botChoice[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
+                                    botChoices[botChoiceCount].addWeight(PaymentTouches(tmpFigure));
                                 }
                                 else
                                 {
-                                    botChoice[botChoiceCount].addWeight(minWeight);
+                                    botChoices[botChoiceCount].addWeight(minWeight);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        botChoice[botChoiceCount].addWeight(minWeight);
+                        botChoices[botChoiceCount].addWeight(minWeight);
                     }
                 }
             }
@@ -105,14 +105,14 @@ public class Bot
 
         for (int i = 0; i < 4*game.getMatrixWidth(); i++)
         {
-                if (botChoice[i].getWeight() > maxWeight)
+                if (botChoices[i].getWeight() > maxWeight)
                 {
-                    maxWeight = botChoice[i].getWeight();
+                    maxWeight = botChoices[i].getWeight();
                     numberMaxWeight = i;
                 }
         }
 
-        return botChoice[numberMaxWeight];
+        return botChoices[numberMaxWeight];
     }
 
     private boolean Validate(Figure figure)
