@@ -9,9 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameActivity extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
+
     DrawGame tet;
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -19,6 +17,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         tet = new DrawGame(this);
         setContentView(tet);
 

@@ -112,13 +112,10 @@ public class DrawGame extends View
         paint.setColor(Color.BLACK);
         canvas.drawPaint(paint);
 
-
         int fieldWidth = player.getMatrixWidth() + 1 + player.getNextFigure().getWidth() + 1;
         int fieldHeight = player.getMatrixHeight() + 1;
 
         int delta = this.getWidth() / fieldWidth;
-
-
 
         if (delta*fieldHeight > this.getHeight())
         {
