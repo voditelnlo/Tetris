@@ -7,9 +7,9 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class Tetris extends View
+public class DrawGame extends View
 {
-    public Tetris(Context context)
+    public DrawGame(Context context)
     {
         super(context);
     }
@@ -24,11 +24,11 @@ public class Tetris extends View
 
         if (game.getGameOver()) {
             paint.setColor(Color.WHITE);
-            paint.setTextSize(this.getWidth() / 18);
+            paint.setTextSize(this.getWidth() / 11);
             paint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText("GAME OVER", offsetX + this.getWidth() / 4, this.getHeight() / 2 - paint.getTextSize(), paint);
-            canvas.drawText("Your score:", offsetX + this.getWidth() / 4, this.getHeight() / 2, paint);
-            canvas.drawText(String.valueOf(game.getScore()), offsetX + this.getWidth() / 4, this.getHeight() / 2 + paint.getTextSize(), paint);
+            canvas.drawText("GAME OVER", this.getWidth()/2, this.getHeight()/2 - 2*paint.getTextSize(), paint);
+            canvas.drawText("Your score:", this.getWidth()/2, this.getHeight()/2, paint);
+            canvas.drawText(String.valueOf(game.getScore()), this.getWidth()/2, this.getHeight()/2 + 2*paint.getTextSize(), paint);
         } else {
             paint.setColor(Color.WHITE);
             paint.setTextSize(((game.getNextFigure().getWidth() + 2) * delta) / 6);
@@ -36,7 +36,7 @@ public class Tetris extends View
             canvas.drawText("Score:", offsetX + (game.getMatrixWidth() + 1 + game.getNextFigure().getWidth()/2)*delta, offsetY + (game.getMatrixHeight()/2 + 2)*delta, paint);
             canvas.drawText(String.valueOf(game.getScore()), offsetX + (game.getMatrixWidth() + 1 + game.getNextFigure().getWidth() / 2) * delta, offsetY + (game.getMatrixHeight() / 2 + 2) * delta + paint.getTextSize(), paint);
             canvas.drawText("Speed:", offsetX + (game.getMatrixWidth() + 1 + game.getNextFigure().getWidth() / 2) * delta, offsetY + (game.getMatrixHeight() / 2 + 2) * delta + 2 * paint.getTextSize(), paint);
-            canvas.drawText(String.valueOf(117 - (int)Math.pow(10, 35380.0 / (game.getScore() + 17290) + 0.025)), offsetX + (game.getMatrixWidth() + 1 + game.getNextFigure().getWidth() / 2) * delta, offsetY + (game.getMatrixHeight() / 2 + 2) * delta + 3 * paint.getTextSize(), paint);
+            canvas.drawText(String.valueOf(117 - game.getDelay()), offsetX + (game.getMatrixWidth() + 1 + game.getNextFigure().getWidth() / 2) * delta, offsetY + (game.getMatrixHeight() / 2 + 2) * delta + 3 * paint.getTextSize(), paint);
 
             paint.setColor(Color.GRAY);
             paint.setStyle(Paint.Style.STROKE);
@@ -113,28 +113,28 @@ public class Tetris extends View
         canvas.drawPaint(paint);
 
 
-        int fieldWidth = player.getMatrixWidth() + player.getNextFigure().getWidth() + 3;
+        int fieldWidth = player.getMatrixWidth() + 1 + player.getNextFigure().getWidth() + 1;
         int fieldHeight = player.getMatrixHeight() + 1;
 
-        int delta = this.getWidth() / (2*fieldWidth);
+        int delta = this.getWidth() / fieldWidth;
 
-        int offsetX = (int)(0.5*delta);
-        int offsetY = (this.getHeight() - delta*fieldHeight) / 2;
+
 
         if (delta*fieldHeight > this.getHeight())
         {
             delta = this.getHeight() / fieldHeight;
-            offsetX = (this.getWidth() - 2*delta*fieldWidth) / 2;
-            offsetY = (int)(0.5*delta);
         }
 
-        if (player.getGameOver())
+        int offsetX = (this.getWidth() - delta*fieldWidth) / 2;
+        int offsetY = (this.getHeight() - delta*fieldHeight) / 2;
+
+        if (player.getGameOver() && player.getScore() == 0)
         {
             paint.setColor(Color.WHITE);
             paint.setTextSize(this.getWidth() / 11);
             paint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText("T E T R I S", offsetX + this.getWidth()/2, this.getHeight()/2, paint);
-            canvas.drawText("Tap to start", offsetX + this.getWidth()/2, this.getHeight()/2 + 2*paint.getTextSize(), paint);
+            canvas.drawText("T E T R I S", this.getWidth()/2, this.getHeight()/2, paint);
+            canvas.drawText("Tap to start", this.getWidth()/2, this.getHeight()/2 + 2*paint.getTextSize(), paint);
         }
         else
         {

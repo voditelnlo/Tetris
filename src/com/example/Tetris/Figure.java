@@ -1,11 +1,7 @@
 package com.example.Tetris;
 
 import android.graphics.Color;
-import android.graphics.Point;
 
-/**
- * Created by nnn on 20.08.2014.
- */
 public class Figure
 {
     private int x = 0;

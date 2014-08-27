@@ -1,8 +1,5 @@
 package com.example.Tetris;
 
-/**
- * Created by nnn on 20.08.2014.
- */
 public class GameState
 {
     private int matrixWidth = 0;
