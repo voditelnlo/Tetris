@@ -88,7 +88,7 @@ public class GameState
         }
     }
 
-    private int Step()
+    private boolean Step()
     {
         Figure tmpFigure = new Figure(figure);
 
@@ -97,7 +97,7 @@ public class GameState
         if (StepValidate(tmpFigure))
         {
             figure.Move(figure.getX(), figure.getY() + 1);
-            return -1;
+            return true;
         }
         else
         {
@@ -108,30 +108,17 @@ public class GameState
                 gameOver = true;
             }
 
-            return 0;
+            AddScore(retJoin);
+            return false;
         }
     }
 
     public void Fall()
     {
-        int score = 0;
-        int retStep = 0;
-
-        do {
-            retStep = Step();
-
-            if (retStep == -1)
-            {
-                score++;
-            }
-            else
-            {
-                score += retStep;
-            }
-
-        }while(retStep == -1);
-
-        AddScore(score);
+        while(Step())
+        {
+            AddScore(1);
+        }
     }
 
     public void MoveRight()
