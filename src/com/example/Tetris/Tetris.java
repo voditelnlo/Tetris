@@ -18,7 +18,6 @@ public class Tetris extends View
     float touchY = 0;
 
     GameState player = new GameState();
-    GameState bot = new GameState();
 
     private void GameDraw(Canvas canvas, GameState game, int offsetX, int offsetY, int delta) {
         Paint paint = new Paint();
@@ -113,7 +112,6 @@ public class Tetris extends View
         paint.setColor(Color.BLACK);
         canvas.drawPaint(paint);
 
-        int offsetBot = this.getWidth() / 2;
 
         int fieldWidth = player.getMatrixWidth() + player.getNextFigure().getWidth() + 3;
         int fieldHeight = player.getMatrixHeight() + 1;
@@ -130,7 +128,7 @@ public class Tetris extends View
             offsetY = (int)(0.5*delta);
         }
 
-        if (player.getGameOver() && bot.getGameOver())
+        if (player.getGameOver())
         {
             paint.setColor(Color.WHITE);
             paint.setTextSize(this.getWidth() / 11);
@@ -140,28 +138,8 @@ public class Tetris extends View
         }
         else
         {
-            paint.setColor(Color.WHITE);
-            canvas.drawLine(offsetBot, 0, offsetBot, this.getHeight(), paint);
-
             GameDraw(canvas, player, offsetX, offsetY, delta);
-            GameDraw(canvas, bot, offsetX + offsetBot, offsetY, delta);
         }
-    }
-
-    private void BotStep()
-    {
-        Bot botGame = new Bot(bot);
-
-        BotChoice botChoice = new BotChoice(botGame.Selection());
-
-        bot.getFigure().Move(botChoice.getX(), bot.getFigure().getY());
-
-        for (int i = 0; i < botChoice.getRotateCount(); i++)
-        {
-            bot.Rotate();
-        }
-
-        bot.Fall();
     }
 
     @Override
@@ -173,15 +151,11 @@ public class Tetris extends View
             {
                 player = new GameState();
                 player.GameStart();
-                bot = new GameState();
-                bot.GameStart();
             }
             else
             {
                 touchX = event.getX();
                 touchY = event.getY();
-
-                BotStep();
 
                 if (touchY > this.getHeight() / 2)
                 {
@@ -220,14 +194,6 @@ public class Tetris extends View
             player.GameTick();
         }
 
-        if (!bot.getGameOver())
-        {
-            bot.GameTick();
-        }
-
         invalidate();
     }
 }
-
-
-//label1.Text = "Score:\n" + score + "\nSpeed:\n" + (1178 - timer2.Interval);
