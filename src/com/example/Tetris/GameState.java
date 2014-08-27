@@ -31,30 +31,6 @@ public class GameState
         delay = (int)Math.pow(10, 35380.0 / (this.score + 17290) + 0.025);
     }
 
-    public GameState(GameState game)
-    {
-        gameOver = true;
-        delayCounter = 0;
-        score = game.getScore();
-
-        matrixWidth = game.getMatrixWidth();
-        matrixHeight = game.getMatrixHeight();
-        matrix = new int[matrixWidth][matrixHeight];
-
-        figure = new Figure(game.getFigure());
-        nextFigure = new Figure(game.getNextFigure());
-
-        for(int i = 0; i < matrixWidth - 1; i++)
-        {
-            for (int j = 0; j < matrixHeight - 1; j++)
-            {
-                matrix[i][j] = game.getMatrix()[i][j];
-            }
-        }
-
-        delay = game.getDelay();
-    }
-
     public void GameStart()
     {
         gameOver = false;

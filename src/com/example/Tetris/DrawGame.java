@@ -14,10 +14,10 @@ public class DrawGame extends View
         super(context);
     }
 
-    float touchX = 0;
-    float touchY = 0;
+    private float touchX = 0;
+    private float touchY = 0;
 
-    GameState player = new GameState();
+    private GameState player = new GameState();
 
     private void GameDraw(Canvas canvas, GameState game, int offsetX, int offsetY, int delta) {
         Paint paint = new Paint();

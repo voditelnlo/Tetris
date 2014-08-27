@@ -7,14 +7,14 @@ public class Figure
     private int x = 0;
     private int y = 0;
 
-    private int figureWidth = 4;
-    private int figureHeight = 4;
+    private int figureWidth = 0;
+    private int figureHeight = 0;
 
     private int numberOfFigure = 0;
 
-    private int elements[][] = new int[figureWidth][figureHeight];
+    private int elements[][];
 
-    private int numberOfFigures = 7;
+    private int numberOfFigures = 0;
     private int colorFigures[] = {Color.rgb(139,0,0), Color.rgb(0,206,209), Color.rgb(255,140,0), Color.rgb(0,0,255), Color.rgb(200,0,255), Color.rgb(0,128,0), Color.rgb(255,0,0)};
     private int arrayOfFigures[][][] = {
             {
@@ -56,16 +56,32 @@ public class Figure
 
     public Figure()
     {
+        x = 0;
+        y = 0;
+
+        figureWidth = 4;
+        figureHeight = 4;
+
+        numberOfFigure = 0;
+
+        numberOfFigures = 7;
+
+        elements = new int[figureWidth][figureHeight];
+
         NewFigure();
     }
 
      public Figure(Figure source)
     {
+        numberOfFigures = 7;
+
         x = source.getX();
         y = source.getY();
         
         figureWidth = source.getWidth();
         figureHeight = source.getHeight();
+
+        elements = new int[figureWidth][figureHeight];
 
         for(int i = 0; i < figureWidth; i++)
         {
